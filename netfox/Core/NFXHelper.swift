@@ -168,10 +168,18 @@ extension URLRequest
         }
     }
     
-    func getNFXBody() -> Data
+     func getNFXBody() -> Data
     {
+        if httpBodyStream == nil {
+            guard httpBody != nil else {
+                return httpBodyStream?.readfully() ?? URLProtocol.property(forKey: "NFXBodyData", in: self) as? Data ?? Data()
+            }
+            let inputStream = InputStream(data: httpBody!)
+            return inputStream.readfully()
+        }
         return httpBodyStream?.readfully() ?? URLProtocol.property(forKey: "NFXBodyData", in: self) as? Data ?? Data()
     }
+   
     
     func getCurl() -> String {
         guard let url = url else { return "" }
